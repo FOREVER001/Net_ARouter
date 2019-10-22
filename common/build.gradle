@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+def rootAndroidId = rootProject.ext.androidId
+def support = rootProject.ext.dependencies
+android {
+    compileSdkVersion rootAndroidId.compileSdkVersion
+    buildToolsVersion rootAndroidId.buildToolsVersion
+
+
+    defaultConfig {
+        minSdkVersion rootAndroidId.minSdkVersion
+        targetSdkVersion rootAndroidId.targetSdkVersion
+        versionCode rootAndroidId.versionCode
+        versionName rootAndroidId.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation support.appcompat
+    //因为每一个模块都要用到arouter_api模块对外提供的加载数据接口（组、路径）
+    //app/order/personal都依赖common公共基础库，所以需要在common库中添加arouter_api的依赖
+    api project(':arouter_api')//这些接口同样对所有业务子模块开放了
+}
